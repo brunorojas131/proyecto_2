@@ -5,13 +5,27 @@ from docx import Document
 from docx.shared import Pt, Cm, Mm
 import matplotlib.pyplot as plt
 
+# Verificar las tablas existentes en la base de datos
+database_path = "db_personas.db"
+conn = sqlite3.connect(database_path)
+cursor = conn.cursor()
 
-database_path = "./Sql_data/db_personas.db"
+# Obtener las tablas en la base de datos
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+tables = cursor.fetchall()
+print("Tablas en la base de datos:")
+for table in tables:
+    print(table[0])
 
-conn = sqlite3.connect("db_personas.db")
+# Cerrar la conexión
+conn.close()
+
+# Aquí ajustamos el nombre de la tabla si es necesario
+# Supongamos que la tabla correcta es "empleados"
+conn = sqlite3.connect(database_path)
 query = """
 SELECT p.nombre_completo AS nombre, p.nacionalidad, s.Rol AS rol, s.Sueldo AS salario
-FROM personas 
+FROM empleados p
 INNER JOIN Salarios s ON p.id_rol = s.id_salarios
 """
 df = pd.read_sql_query(query, conn)

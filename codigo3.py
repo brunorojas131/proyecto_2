@@ -6,12 +6,12 @@ from docx.shared import Pt, Cm, Mm
 import matplotlib.pyplot as plt
 
 
-database_path = "./Sql_data/db_personas.db"
+database_path = "db_personas.db"
 
-conn = sqlite3.connect("db_personas.db")
+conn = sqlite3.connect(database_path)
 query = """
 SELECT p.nombre_completo AS nombre, p.nacionalidad, s.Rol AS rol, s.Sueldo AS salario
-FROM personas 
+FROM personas p
 INNER JOIN Salarios s ON p.id_rol = s.id_salarios
 """
 df = pd.read_sql_query(query, conn)
