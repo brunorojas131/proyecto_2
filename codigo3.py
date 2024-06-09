@@ -100,10 +100,10 @@ def generar_contrato(date, rol, address, rut, full_name, nationality, birth_date
 
 def mostrar_menu(df):
     while True:
-        print("MENU:")
-        print("1. Generar contratos por RUT.")
-        print("2. Generar contratos por rango de IDs")
-        print("2. Salir")
+        print("Opciones de generación de contratos:")
+        print("1. Generar contratos por selección individual de RUTs (puedes elegir entre un RUT o varios separados por una coma).")
+        print("2. Generar contratos por rango de IDs.")
+        print("2. Salir.")
         opcion = input("Seleccione una opción: ")
         if opcion == "1":
             seleccion = input("Ingrese los RUTs de las personas (separados por comas) para generar contratos: ")
@@ -130,7 +130,7 @@ def mostrar_menu(df):
             except ValueError:
                 print("Selección de RUTs inválida. Por favor, intente de nuevo.")
         elif opcion == "2":
-            rango = input("Ingrese el rango de IDs para generar contratos (por ejemplo, 1-10): ")
+            rango = input("Ingrese el rango de IDs para generar contratos (por ejemplo, 0-10): ")
             try:
                 inicio, fin = map(int, rango.split('-'))
                 indices = range(inicio, fin + 1)
