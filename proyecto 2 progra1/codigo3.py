@@ -10,7 +10,7 @@ database_path = "db_personas.db"
 
 conn = sqlite3.connect("db_personas.db")
 query = """
-SELECT p.nombre_completo AS nombre, p.nacionalidad, s.Rol AS rol, s.Sueldo AS salario, p.rut AS rut
+SELECT p.fecha_ingreso AS fecha, s.Rol AS rol, p.residencia AS residencia, p.nombre_completo AS nombre, p.nacionalidad AS nacionalidad, p.fecha_de_nacimiento AS fecha_de_nacimiento, p.profesion AS profesion, s.Sueldo AS salario, p.rut AS rut
 FROM personas p
 INNER JOIN Salarios s ON p.id_rol = s.id_salarios
 """
@@ -115,14 +115,14 @@ def mostrar_menu(df):
                     if not person_data.empty:
                         person_data = person_data.iloc[0]
                         generar_contrato(
-                            date='2024-06-04',  
+                            date=person_data['fecha'],  
                             rol=person_data['rol'],
-                            address='Direccion de ejemplo',  
+                            address=person_data['residencia'],  
                             rut=person_data['rut'],  
                             full_name=person_data['nombre'],
                             nationality=person_data['nacionalidad'],
-                            birth_date='01-01-1990',  
-                            profession='Profesion de ejemplo',  
+                            birth_date=person_data['fecha_de_nacimiento'],  
+                            profession=person_data['profesion'],  
                             salary=str(person_data['salario'])
                         )
                         print(f"Contrato generado para {person_data['nombre']}")
@@ -139,14 +139,14 @@ def mostrar_menu(df):
                     if i < len(df):
                         person_data = df.iloc[i]
                         generar_contrato(
-                            date='2024-06-04',  
+                            date=person_data["fecha"],  
                             rol=person_data['rol'],
-                            address='Direccion de ejemplo',  
+                            address=person_data['residencia'],  
                             rut=person_data['rut'],  
                             full_name=person_data['nombre'],
                             nationality=person_data['nacionalidad'],
-                            birth_date='01-01-1990',  
-                            profession='Profesion de ejemplo',  
+                            birth_date=person_data['fechas_de_nacimiento'],  
+                            profession=person_data-['profesion'],  
                             salary=str(person_data['salario'])
                         )
                         print(f"Contrato generado para {person_data['nombre']}")
