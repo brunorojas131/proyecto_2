@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 database_path = "db_personas.db"
 
-conn = sqlite3.connect("db_personas.db")
+conn = sqlite3.connect(database_path)
 query = """
 SELECT p.fecha_ingreso AS fecha, s.Rol AS rol, p.residencia AS residencia, p.nombre_completo AS nombre, p.nacionalidad AS nacionalidad, p.fecha_de_nacimiento AS fecha_de_nacimiento, p.profesion AS profesion, s.Sueldo AS salario, p.rut AS rut
 FROM personas p
@@ -110,67 +110,100 @@ def mostrar_menu(df):
         print("3. Generar contratos por nacionalidad")
         print("4. Generar contratos por profesión")
         print("5. Salir")
-        opcion = input("Seleccione una opción (1, 2, 3, 4 o 5): ")
+        opcion = input("Seleccione una opción: ")
 
         if opcion == '1':
-            seleccion = input("Ingrese los RUTs de las personas (separados por comas) para generar contratos: ")
-            ruts = [rut.strip() for rut in seleccion.split(',')]
-            personas_encontradas = []
-            for rut in ruts:
-                person_data = df[df['rut'] == rut]
+            while True:
+                seleccion = input("Ingrese los RUTs de las personas (separados por comas) para generar contratos: ")
+                print("Para volver al menú principal, escriba 'volver'.")
+                ruts = [rut.strip() for rut in seleccion.split(',')]
+                personas_encontradas = []
+                for rut in ruts:
+                    person_data = df[df['rut'] == rut]
                 if not person_data.empty:
                     personas_encontradas.append(person_data.iloc[0])
+                elif seleccion == "volver":
+                    break
                 else:
                     print(f"No se encontró a la persona con RUT: {rut}")
-            if personas_encontradas:
-                for person_data in personas_encontradas:
-                    generar_contrato(
-                        date=person_data['fecha'],  
-                        rol=person_data['rol'],
-                        address=person_data['residencia'],  
-                        rut=person_data['rut'],  
-                        full_name=person_data['nombre'],
-                        nationality=person_data['nacionalidad'],
-                        birth_date=person_data['fecha_de_nacimiento'],  
-                        profession=person_data['profesion'],  
-                        salary=str(person_data['salario'])
-                    )
-                    print(f"Contrato generado para {person_data['nombre']}")
-
+                    print("Para volver al menú principal, escriba 'volver'.")
+                if personas_encontradas:
+                    for person_data in personas_encontradas:  
+                          generar_contrato(
+                          date=person_data['fecha'],  
+                          rol=person_data['rol'],
+                          address=person_data['residencia'],  
+                          rut=person_data['rut'],  
+                          full_name=person_data['nombre'],
+                          nationality=person_data['nacionalidad'],
+                          birth_date=person_data['fecha_de_nacimiento'],  
+                          profession=person_data['profesion'],  
+                          salary=str(person_data['salario'])      
+                          )
+                          print(f"Contrato generado para {person_data['nombre']}")
+                    while True:
+                        print("opciones:")
+                        print("1. Generar otro contrato por RUTS.")
+                        print("2. salir.")
+                        mini_menu_opcion = input("seleccione una opcion: ")
+                        if mini_menu_opcion == "1":
+                            break
+                        elif mini_menu_opcion == "2":
+                            return
+                        else:
+                            print("opcion invalida, intente de nuevo.")
+                               
         elif opcion == '2':
-            rango = input("Ingrese el rango de IDs para generar contratos (por ejemplo, 0-10): ")
-            try:
-                inicio, fin = map(int, rango.split('-'))
-                indices = range(inicio, fin + 1)
-                for i in indices:
-                    if i < len(df):
-                        person_data = df.iloc[i]
-                        generar_contrato(
-                            date=person_data["fecha"],  
-                            rol=person_data['rol'],
-                            address=person_data['residencia'],  
-                            rut=person_data['rut'],  
-                            full_name=person_data['nombre'],
-                            nationality=person_data['nacionalidad'],
-                            birth_date=person_data['fecha_de_nacimiento'],  
-                            profession=person_data['profesion'],  
-                            salary=str(person_data['salario'])
-                        )
-                        print(f"Contrato generado para {person_data['nombre']}")
-                    else:
-                        print(f"El ID {i} está fuera del rango de datos disponible.")
-            except ValueError:
-                print("Rango de IDs inválido. Por favor, intente de nuevo.")
-            except Exception as e:
-                print(f"Ha ocurrido un error: {e}")
-
+            while True:
+                rango = input("Ingrese el rango de IDs para generar contratos (por ejemplo, 0-10): ")
+                print("Para volver al menú principal, escriba 'volver'.")
+                if rango == "volver":
+                    break
+                else:
+                    try:
+                        inicio, fin = map(int, rango.split('-'))
+                        indices = range(inicio, fin + 1)
+                        for i in indices:
+                          if i < len(df):
+                            person_data = df.iloc[i]
+                            generar_contrato(
+                                date=person_data["fecha"],  
+                                rol=person_data['rol'],
+                                address=person_data['residencia'],  
+                                rut=person_data['rut'],  
+                                full_name=person_data['nombre'],
+                                nationality=person_data['nacionalidad'],
+                                birth_date=person_data['fecha_de_nacimiento'],  
+                                profession=person_data['profesion'],  
+                                salary=str(person_data['salario'])
+                            )
+                            print(f"Contrato generado para {person_data['nombre']}")
+                        else:
+                           print(f"El ID {i} está fuera del rango de datos disponible.")
+                    except ValueError:
+                       print("Rango de IDs inválido. Por favor, intente de nuevo.")
+                    except Exception as e:
+                       print(f"Ha ocurrido un error: {e}")
+                       while True:
+                        print("opciones:")
+                        print("1. Generar otro contrato por RUTS.")
+                        print("2. Salir.")
+                        mini_menu_opcion = input("seleccione una opcion: ")
+                        if mini_menu_opcion == "1":
+                            continue
+                        elif mini_menu_opcion == "2":
+                            return
+                        else:
+                            print("opcion invalida, intente de nuevo.")
+                    
         elif opcion == '3':
             print("Nacionalidades disponibles:")
             print(df['nacionalidad'].unique())
             print("Para volver al menú principal, escriba 'volver'.")
             while True:
                 nacionalidad = input("Ingrese la nacionalidad para generar contratos: ").lower()
-                if nacionalidad == "salir":
+                if nacionalidad == "volver":
+                    print("volviendo al menu principal")
                     break
                 personas_filtradas = df[df['nacionalidad'] == nacionalidad]
                 if not personas_filtradas.empty:
@@ -199,7 +232,8 @@ def mostrar_menu(df):
                         else:
                             print("Opción inválida. Por favor, intente de nuevo.")
                 else:
-                    print(f"No se encontraron personas con la nacionalidad: {nacionalidad}")
+                    print(f"No se encontraron personas con la nacionalidad: {nacionalidad}, intente de nuevo")
+                    print("Para volver al menú principal, escriba 'volver'.")
 
         elif opcion == '4':
             print("\nProfesiones disponibles:")
@@ -236,14 +270,14 @@ def mostrar_menu(df):
                         else:
                             print("Opción inválida. Por favor, intente de nuevo.")
                 else:
-                    print(f"No se encontraron personas con la profesión: {profesion}")
+                    print(f"No se encontraron personas con la profesión: {profesion}, intente de nuevo.")
+                    print("Para volver al menú principal, escriba 'volver'.")
 
         elif opcion == '5':
             print("Saliendo del menú.")
             break
         else:
             print("Opción inválida. Por favor, intente de nuevo.")
-
 mostrar_menu(df)
 
 
